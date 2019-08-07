@@ -30,12 +30,20 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.list_activity_menu,menu);
+        MenuItem insertMenu= menu.findItem(R.id.insert_menu);
+        if(FirebaseUtil.isAdmin){
+            insertMenu.setVisible(true);
+        }
+        else{
+            insertMenu.setVisible(false);
+        }
         return true;
     }
 
@@ -47,6 +55,8 @@ public class ListActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.logout_menu:
+                FirebaseUtil.isAdmin=false;
+                invalidateOptionsMenu();
                 AuthUI.getInstance()
                         .signOut(this)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -79,5 +89,10 @@ public class ListActivity extends AppCompatActivity {
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
         rvDeals.setLayoutManager(dealsLayoutManager);
         FirebaseUtil.attachListener();
+        invalidateOptionsMenu();
+    }
+
+    public void showMenu(){
+        invalidateOptionsMenu();
     }
 }
